@@ -23,156 +23,147 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            touch-action: manipulation; /* ڕێگری لە زووم */
+            touch-action: manipulation;
         }
 
-        /* -------------------------------------------
-           ١. شوێنی وێنەی کۆلێژ (Background)
-           لێرە وێنەکەت دەگۆڕیت
-        ------------------------------------------- */
+        /* باگراوند (وێنەی کۆلێژ) */
         .game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* لێرە ناوی وێنەکەت بنووسە، نموونە: college.jpg */
             background-image: url('college.jpg'); 
             background-size: cover;
             background-position: center;
-            filter: brightness(0.3) blur(2px); /* تاریک و تەڵخ کراوە */
+            filter: brightness(0.3) blur(3px); /* تاریک و تەڵخ */
             z-index: -1;
         }
 
-        /* چوارچێوەی یاری */
         .game-container {
             width: 100%;
             max-width: 600px;
             height: 300px;
             position: relative;
             border-bottom: 2px solid rgba(255,255,255,0.2);
-            overflow: hidden; /* شاردنەوەی ئەوەی دەچێتە دەرەوە */
+            overflow: hidden;
+            background: rgba(0,0,0,0.1); /* کەمێک تاریکی زیادە */
         }
 
-        /* یاریزان (تەڵەبە) */
+        /* یاریزان */
         #player {
             width: 50px;
             height: 50px;
-            font-size: 40px;
+            font-size: 45px; /* قەبارەی گەورەتر */
             position: absolute;
             bottom: 0;
-            left: 20px; /* شوێنی جێگیر */
+            left: 50px; /* کەمێک هێنامە پێشەوە */
             z-index: 10;
+            /* ئەمە کارەکتەرەکە دەسوڕێنێت بۆ لای ڕاست */
+            transform: scaleX(-1); 
         }
 
-        /* ئەنیمەیشنی بازدان */
+        /* بەربەست */
+        #obstacle {
+            width: 40px;
+            height: 40px;
+            font-size: 35px;
+            position: absolute;
+            bottom: 0;
+            right: -50px;
+            /* لابردنی ئەنیمەیشن لە سەرەتا */
+        }
+
+        .animate-obstacle {
+            animation: moveObstacle 1.8s infinite linear;
+        }
+
         .animate-jump {
             animation: jump 0.5s linear;
         }
 
         @keyframes jump {
             0% { bottom: 0; }
-            30% { bottom: 120px; } /* بەرزی بازدان */
-            70% { bottom: 120px; }
+            30% { bottom: 130px; }
+            70% { bottom: 130px; }
             100% { bottom: 0; }
         }
 
-        /* بەربەست (کتێب و سفر) */
-        #obstacle {
-            width: 40px;
-            height: 40px;
-            font-size: 30px;
-            position: absolute;
-            bottom: 0;
-            right: -50px; /* دەستپێک لە دەرەوەی شاشە */
-            animation: moveObstacle 1.5s infinite linear; /* خێرایی */
-        }
-
-        /* جوڵەی بەربەست */
         @keyframes moveObstacle {
             0% { right: -50px; }
             100% { right: 100%; }
         }
 
-        /* نمرەکان */
         .score-board {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 1.2rem;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 15px;
-            border-radius: 20px;
+            top: 20px; right: 20px;
+            color: white; font-size: 1.5rem;
+            text-shadow: 0 0 5px black;
             z-index: 20;
         }
 
-        /* شاشەی دۆڕاندن */
+        /* شاشەی دۆڕان */
         .game-over-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none; /* سەرەتا دیار نییە */
+            background: rgba(0,0,0,0.9);
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
             z-index: 50;
             text-align: center;
-            backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        .funny-msg {
+            color: #fca5a5;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            line-height: 1.6;
+            max-width: 80%;
         }
 
         .btn-restart {
             background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            margin-top: 20px;
-            cursor: pointer;
-            font-family: inherit;
+            color: white; border: none; padding: 12px 35px;
+            font-size: 1.2rem; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 0 15px var(--primary);
         }
 
-        /* زەوی (هێڵێک) */
         .ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 2px;
-            background: white;
-            opacity: 0.2;
+            position: absolute; bottom: 0; width: 100%; height: 4px;
+            background: white; opacity: 0.2;
         }
 
-        /* ڕێنمایی سەرەتا */
         .start-msg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 40%; left: 50%;
             transform: translate(-50%, -50%);
-            color: rgba(255,255,255,0.7);
-            font-size: 1.5rem;
-            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.4rem; text-align: center;
             pointer-events: none;
+            text-shadow: 0 0 10px black;
         }
 
     </style>
 </head>
-<body onclick="jump()"> 
-<div class="game-bg"></div>
+<body onclick="jump()">
+
+    <div class="game-bg"></div>
 
     <div class="game-container">
-        <div class="score-board">نمرە: <span id="scoreSpan">0</span></div>
+        <div class="score-board"><span id="scoreSpan">0</span></div>
         
         <div id="player">🏃‍♂️</div>
-        
         <div id="obstacle">📚</div>
 
         <div class="ground"></div>
-        
-        <div class="start-msg" id="startMsg">کلیک بکە بۆ بازدان</div>
+        <div class="start-msg" id="startMsg">کلیک بکە بۆ دەستپێکردن</div>
 
         <div class="game-over-screen" id="gameOverMsg">
-            <h1 style="color: var(--accent);">خەوت لێکەوت! 😴</h1>
-            <p>مامۆستا پێی زانیت...</p>
-            <p style="margin-top: 10px; color: #a5b4fc;">خاڵ: <span id="finalScore">0</span></p>
+            <h1 style="color: var(--accent); font-size: 2rem;">دۆڕای! 💀</h1>
+            
+            <p class="funny-msg" id="funnyText">...</p>
+            
+            <p style="margin-bottom: 20px; color: #a5b4fc;">نمرەی کۆتایی: <span id="finalScore">0</span></p>
             <button class="btn-restart" onclick="restartGame(event)">یاری کردنەوە 🔄</button>
         </div>
     </div>
@@ -183,93 +174,103 @@
         var scoreSpan = document.getElementById("scoreSpan");
         var gameOverMsg = document.getElementById("gameOverMsg");
         var startMsg = document.getElementById("startMsg");
+        var funnyText = document.getElementById("funnyText");
         
         var score = 0;
-        var isGameOver = false;
         var gameStarted = false;
-        var obstacleTypes = ["📚", "🅾️", "💤", "📝"]; // جۆرەکانی بەربەست
+        var isDead = false;
+        var checkDeadInterval;
 
-        // سەرەتا یارییەکە ڕاوەستاوە (Animation off)
-        obstacle.style.animation = "none";
+        // لیستەی قسە کۆمیدییەکان
+        const deathMessages = [
+            "کاک عومەر لێرەش زەینت ئیش ناکات! 😂",
+            "خارە هەر ئاگات لە دەرسەکە نییە، ئاگات لە گەمەی بی بەشەر! 🌚",
+            "لەبەر داڵغە لێدان لە یار، ئاگات نە لە مەحازەرە هەیە نە گەمە 💔",
+            "تۆیەکی گەنج دڵمان نەدەهات تەماشات کەین، ئەوە حاڵتە ئێستە؟ 🐸",
+            "بڕۆ دەرسەکەت بخوێنە باشترە، تۆ هی یاری نیت! 📚"
+        ];
 
-        // فەنکشنی بازدان
+        // جۆرەکانی بەربەست
+        const obstacles = ["📚", "🅾️", "💤", "📝"];
+
         function jump() {
-            if(isGameOver) return;
+            if(isDead) return;
 
-            // دەستپێکردنی یاری لە یەکەم کلیک
             if (!gameStarted) {
-                gameStarted = true;
-                startMsg.style.display = "none";
-                obstacle.style.animation = "moveObstacle 1.5s infinite linear";
+                startGame();
+                return;
             }
 
             if(player.classList != "animate-jump"){
                 player.classList.add("animate-jump");
-                
-                // لابردنی کلاسەکە دوای 500ms
                 setTimeout(function(){
                     player.classList.remove("animate-jump");
                 }, 500);
             }
         }
 
-        // پشکنینی پێکدادان (هەموو 10ms جارێک)
-        var checkDead = setInterval(function() {
-            if(!gameStarted) return;
+        function startGame() {
+            gameStarted = true;
+            startMsg.style.display = "none";
+            obstacle.classList.add("animate-obstacle");
+            
+            // دەستپێکردنی پشکنینی پێکدادان
+            checkDeadInterval = setInterval(checkCollision, 10);
+        }
 
-            // وەرگرتنی شوێنی یاریزان (Top)
+        function checkCollision() {
+            // شوێنی یاریزان (Top)
             var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"));
             
-            // وەرگرتنی شوێنی بەربەست (Left)
+            // شوێنی بەربەست (Right - چونکە لە ڕاستەوە دێت)
+            // بەڵام لێرە Left بەکاردێنین بۆ پێکدادان
             var obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"));
 
-            // لۆجیکی پێکدادان
-            // ئەگەر بەربەستەکە گەیشتە لای یاریزان (نێوان 0 و 40px)
-            // وە یاریزانەکە لە خوارەوە بوو (بازینەدابوو >= 250)
-            // ژمارەکان دەگونجێندرێن بەپێی بەرزی container (300px)
-            
-            // Player height is ~50px, Container is 300px. Bottom 0 means top is 250px.
-            if(obstacleLeft < 40 && obstacleLeft > 0 && playerTop >= 250){
+            // لۆجیکی پێکدادان (وردکراوەتەوە)
+            // ئەگەر بەربەستەکە گەیشتە شوێنی یاریزان (نێوان ٥٠ و ٠)
+            // وە یاریزانەکە لە زەوییەکە نزیک بوو (بازینەدا بوو > ٢٤٠)
+            if(obstacleLeft < 90 && obstacleLeft > 40 && playerTop >= 240){
                 gameOver();
             } else {
-                // زیادکردنی نمرە
+                // زیادکردنی نمرە بە بەردەوامی
                 score++;
-                if(score % 10 == 0) { // بۆ ئەوەی زۆر خێرا نەڕوات
-                    scoreSpan.innerText = Math.floor(score / 10);
+                if(score % 10 == 0) {
+                    scoreSpan.innerText = Math.floor(score / 100);
                 }
             }
+        }
 
-        }, 10);
-
-        // گۆڕینی شێوەی بەربەستەکە هەر جارێک دێتەوە سەرەتا
+        // گۆڕینی شێوەی بەربەست
         obstacle.addEventListener('animationiteration', () => {
-            var randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
-            obstacle.innerText = randomType;
-            
-            // زیادکردنی خێرایی کەمێک
-            // (لێرە دەتوانی کۆد زیاد بکەیت بۆ خێراکردن)
+            var randomIcon = obstacles[Math.floor(Math.random() * obstacles.length)];
+            obstacle.innerText = randomIcon;
         });
 
         function gameOver() {
-            isGameOver = true;
-            obstacle.style.animation = "none";
+            isDead = true;
+            obstacle.style.animation = "none"; // ڕاگرتنی جوڵە
             obstacle.style.display = "none";
+            clearInterval(checkDeadInterval); // ڕاگرتنی پشکنین
+
+            // هەڵبژاردنی قسەی کۆمیدی
+            var randomMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
+            funnyText.innerText = randomMsg;
+            
+            document.getElementById("finalScore").innerText = Math.floor(score / 100);
             gameOverMsg.style.display = "flex";
-            document.getElementById("finalScore").innerText = Math.floor(score / 10);
         }
 
         function restartGame(e) {
-            e.stopPropagation(); // ڕێگری لە بازدانی هەڵە
+            e.stopPropagation();
             location.reload();
         }
-        
-        // بۆ ئەوەی بە Space Bar باز بدات
+
+        // Spacebar support
         document.body.onkeyup = function(e){
             if(e.keyCode == 32){
                 jump();
             }
         }
-
     </script>
 </body>
 </html>
