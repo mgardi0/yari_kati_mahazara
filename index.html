@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ڕاکردن لە سفر 🏃‍♂️</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        :root {
+            --primary: #8b5cf6; /* مۆر */
+            --accent: #f43f5e; /* سوور */
+            --text: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            overflow: hidden;
+            background-color: #111;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: manipulation; /* ڕێگری لە زووم */
+        }
+
+        /* -------------------------------------------
+           ١. شوێنی وێنەی کۆلێژ (Background)
+           لێرە وێنەکەت دەگۆڕیت
+        ------------------------------------------- */
+        .game-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* لێرە ناوی وێنەکەت بنووسە، نموونە: college.jpg */
+            background-image: url('college.jpg'); 
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) blur(2px); /* تاریک و تەڵخ کراوە */
+            z-index: -1;
+        }
+
+        /* چوارچێوەی یاری */
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            position: relative;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden; /* شاردنەوەی ئەوەی دەچێتە دەرەوە */
+        }
+
+        /* یاریزان (تەڵەبە) */
+        #player {
+            width: 50px;
+            height: 50px;
+            font-size: 40px;
+            position: absolute;
+            bottom: 0;
+            left: 20px; /* شوێنی جێگیر */
+            z-index: 10;
+        }
+
+        /* ئەنیمەیشنی بازدان */
+        .animate-jump {
+            animation: jump 0.5s linear;
+        }
+
+        @keyframes jump {
+            0% { bottom: 0; }
+            30% { bottom: 120px; } /* بەرزی بازدان */
+            70% { bottom: 120px; }
+            100% { bottom: 0; }
+        }
+
+        /* بەربەست (کتێب و سفر) */
+        #obstacle {
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            position: absolute;
+            bottom: 0;
+            right: -50px; /* دەستپێک لە دەرەوەی شاشە */
+            animation: moveObstacle 1.5s infinite linear; /* خێرایی */
+        }
+
+        /* جوڵەی بەربەست */
+        @keyframes moveObstacle {
+            0% { right: -50px; }
+            100% { right: 100%; }
+        }
+
+        /* نمرەکان */
+        .score-board {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            z-index: 20;
+        }
+
+        /* شاشەی دۆڕاندن */
+        .game-over-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none; /* سەرەتا دیار نییە */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 50;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-restart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* زەوی (هێڵێک) */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: white;
+            opacity: 0.2;
+        }
+
+        /* ڕێنمایی سەرەتا */
+        .start-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.7);
+            font-size: 1.5rem;
+            text-align: center;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body onclick="jump()"> 
+<div class="game-bg"></div>
+
+    <div class="game-container">
+        <div class="score-board">نمرە: <span id="scoreSpan">0</span></div>
+        
+        <div id="player">🏃‍♂️</div>
+        
+        <div id="obstacle">📚</div>
+
+        <div class="ground"></div>
+        
+        <div class="start-msg" id="startMsg">کلیک بکە بۆ بازدان</div>
+
+        <div class="game-over-screen" id="gameOverMsg">
+            <h1 style="color: var(--accent);">خەوت لێکەوت! 😴</h1>
+            <p>مامۆستا پێی زانیت...</p>
+            <p style="margin-top: 10px; color: #a5b4fc;">خاڵ: <span id="finalScore">0</span></p>
+            <button class="btn-restart" onclick="restartGame(event)">یاری کردنەوە 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        var player = document.getElementById("player");
+        var obstacle = document.getElementById("obstacle");
+        var scoreSpan = document.getElementById("scoreSpan");
+        var gameOverMsg = document.getElementById("gameOverMsg");
+        var startMsg = document.getElementById("startMsg");
+        
+        var score = 0;
+        var isGameOver = false;
+        var gameStarted = false;
+        var obstacleTypes = ["📚", "🅾️", "💤", "📝"]; // جۆرەکانی بەربەست
+
+        // سەرەتا یارییەکە ڕاوەستاوە (Animation off)
+        obstacle.style.animation = "none";
+
+        // فەنکشنی بازدان
+        function jump() {
+            if(isGameOver) return;
+
+            // دەستپێکردنی یاری لە یەکەم کلیک
+            if (!gameStarted) {
+                gameStarted = true;
+                startMsg.style.display = "none";
+                obstacle.style.animation = "moveObstacle 1.5s infinite linear";
+            }
+
+            if(player.classList != "animate-jump"){
+                player.classList.add("animate-jump");
+                
+                // لابردنی کلاسەکە دوای 500ms
+                setTimeout(function(){
+                    player.classList.remove("animate-jump");
+                }, 500);
+            }
+        }
+
+        // پشکنینی پێکدادان (هەموو 10ms جارێک)
+        var checkDead = setInterval(function() {
+            if(!gameStarted) return;
+
+            // وەرگرتنی شوێنی یاریزان (Top)
+            var playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"));
+            
+            // وەرگرتنی شوێنی بەربەست (Left)
+            var obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"));
+
+            // لۆجیکی پێکدادان
+            // ئەگەر بەربەستەکە گەیشتە لای یاریزان (نێوان 0 و 40px)
+            // وە یاریزانەکە لە خوارەوە بوو (بازینەدابوو >= 250)
+            // ژمارەکان دەگونجێندرێن بەپێی بەرزی container (300px)
+            
+            // Player height is ~50px, Container is 300px. Bottom 0 means top is 250px.
+            if(obstacleLeft < 40 && obstacleLeft > 0 && playerTop >= 250){
+                gameOver();
+            } else {
+                // زیادکردنی نمرە
+                score++;
+                if(score % 10 == 0) { // بۆ ئەوەی زۆر خێرا نەڕوات
+                    scoreSpan.innerText = Math.floor(score / 10);
+                }
+            }
+
+        }, 10);
+
+        // گۆڕینی شێوەی بەربەستەکە هەر جارێک دێتەوە سەرەتا
+        obstacle.addEventListener('animationiteration', () => {
+            var randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+            obstacle.innerText = randomType;
+            
+            // زیادکردنی خێرایی کەمێک
+            // (لێرە دەتوانی کۆد زیاد بکەیت بۆ خێراکردن)
+        });
+
+        function gameOver() {
+            isGameOver = true;
+            obstacle.style.animation = "none";
+            obstacle.style.display = "none";
+            gameOverMsg.style.display = "flex";
+            document.getElementById("finalScore").innerText = Math.floor(score / 10);
+        }
+
+        function restartGame(e) {
+            e.stopPropagation(); // ڕێگری لە بازدانی هەڵە
+            location.reload();
+        }
+        
+        // بۆ ئەوەی بە Space Bar باز بدات
+        document.body.onkeyup = function(e){
+            if(e.keyCode == 32){
+                jump();
+            }
+        }
+
+    </script>
+</body>
+</html>
